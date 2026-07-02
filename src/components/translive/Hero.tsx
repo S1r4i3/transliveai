@@ -40,7 +40,7 @@ export function Hero() {
 
       <div className="relative w-full max-w-[1400px] mx-auto px-6 md:px-10 grid place-items-center">
         {/* Orb centered behind text */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div data-orb-parallax className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ willChange: "transform" }}>
           <div className="hidden md:block">
             <Orb size={640} intensity={3} />
           </div>
