@@ -1,24 +1,54 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useCursor, Nav } from "@/components/translive/Chrome";
+import { Preloader } from "@/components/translive/Preloader";
+import { Hero } from "@/components/translive/Hero";
+import { Marquee } from "@/components/translive/Marquee";
+import { Manifesto } from "@/components/translive/Manifesto";
+import { Scenes } from "@/components/translive/Scenes";
+import { Stats, Badges, Testimonials } from "@/components/translive/Middle";
+import { Demo } from "@/components/translive/Demo";
+import { Pricing, Engine } from "@/components/translive/Pricing";
+import { Closing, Footer } from "@/components/translive/Closing";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Translive — One video. Every language. Zero excuses." },
+      {
+        name: "description",
+        content:
+          "AI video & audio translation with lip-sync in 42 languages. Voice cloning, vocal remover, and a 0.4s latency engine — champagne-noir polish, studio-grade output.",
+      },
+      { property: "og:title", content: "Translive — Every language. One voice. Yours." },
+      { property: "og:description", content: "AI video translation with lip-sync in 42 languages. Sounds like you." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  useCursor();
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="grain relative min-h-screen bg-ink text-bone">
+      <Preloader />
+      <Nav />
+      <main>
+        <Hero />
+        <Marquee />
+        <Manifesto />
+        <Scenes />
+        <Stats />
+        <Marquee reverse />
+        <Demo />
+        <Badges />
+        <Testimonials />
+        <Pricing />
+        <Engine />
+        <Closing />
+      </main>
+      <Footer />
     </div>
   );
 }
