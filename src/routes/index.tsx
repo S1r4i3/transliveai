@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCursor, Nav } from "@/components/translive/Chrome";
+import { useMotion } from "@/components/translive/motion";
 import { Preloader } from "@/components/translive/Preloader";
 import { Hero } from "@/components/translive/Hero";
 import { Marquee } from "@/components/translive/Marquee";
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   useCursor();
+  useMotion();
   return (
     <div className="grain relative min-h-screen bg-ink text-bone">
       <Preloader />
