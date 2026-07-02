@@ -31,6 +31,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   useCursor();
+  useMotion();
   return (
     <div className="grain relative min-h-screen bg-ink text-bone">
       <Preloader />
