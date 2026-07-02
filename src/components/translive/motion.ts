@@ -22,60 +22,22 @@ export function useMotion() {
     }
 
     const ctx = gsap.context(() => {
-      // Section headline word reveal
-      document.querySelectorAll<HTMLElement>("[data-reveal-words]").forEach((el) => {
-        if (el.dataset.revealDone) return;
-        el.dataset.revealDone = "1";
-        const text = el.textContent ?? "";
-        el.textContent = "";
-        const words = text.split(/(\s+)/);
-        const spans: HTMLSpanElement[] = [];
-        words.forEach((w) => {
-          if (/^\s+$/.test(w)) {
-            el.appendChild(document.createTextNode(w));
-          } else {
-            const wrap = document.createElement("span");
-            wrap.style.display = "inline-block";
-            wrap.style.overflow = "hidden";
-            wrap.style.verticalAlign = "top";
-            const inner = document.createElement("span");
-            inner.style.display = "inline-block";
-            inner.textContent = w;
-            inner.style.willChange = "transform,opacity";
-            wrap.appendChild(inner);
-            el.appendChild(wrap);
-            spans.push(inner);
-          }
-        });
-        if (reduce) return;
-        gsap.from(spans, {
-          yPercent: 110,
+      if (reduce) return;
+
+      // Auto fade-up for section headings and their lead paragraphs
+      const autoTargets = document.querySelectorAll<HTMLElement>(
+        "section h2, section [data-lead], [data-reveal]"
+      );
+      autoTargets.forEach((el) => {
+        gsap.from(el, {
+          y: 30,
           opacity: 0,
-          duration: 0.9,
+          duration: 0.8,
           ease: "power3.out",
-          stagger: 0.06,
           scrollTrigger: { trigger: el, start: "top 85%", once: true },
         });
       });
 
-      if (reduce) {
-        // Simple fade only
-        gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
-          gsap.set(el, { opacity: 1 });
-        });
-        return;
-      }
-
-      // Generic fade-up reveals
-      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
-        gsap.from(el, {
-          y: 30,
-          opacity: 0,
-          duration: 0.7,
-          ease: "power2.out",
-          scrollTrigger: { trigger: el, start: "top 80%", once: true },
-        });
-      });
 
       // Stagger children of a parent with [data-reveal-stagger]
       gsap.utils.toArray<HTMLElement>("[data-reveal-stagger]").forEach((parent) => {
