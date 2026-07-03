@@ -87,8 +87,8 @@ export function Demo() {
               </div>
             </div>
 
-            <div className="mt-5 flex items-center justify-between">
-              <div className="flex items-end gap-0.5 h-8 flex-1 mr-4">
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-end gap-0.5 h-8 flex-1 min-w-[140px]">
                 {Array.from({ length: 40 }).map((_, i) => (
                   <span
                     key={i}

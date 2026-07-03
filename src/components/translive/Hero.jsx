@@ -133,11 +133,11 @@ export function Hero() {
       ))}
 
       <div
-        className="relative w-full max-w-[1400px] mx-auto px-6 md:px-10 grid md:grid-cols-[1.05fr_1fr] gap-14 md:gap-10 items-center"
+        className="relative w-full max-w-[1400px] mx-auto px-6 md:px-10 grid lg:grid-cols-[1.05fr_1fr] gap-14 lg:gap-10 items-center"
         style={{ perspective: "1100px" }}
       >
         {/* ---------------- Left: editorial headline ---------------- */}
-        <div className="relative z-10 text-center md:text-left">
+        <div className="relative z-10 text-center lg:text-left">
           <div data-hero-fade className="inline-flex items-center gap-2 glass-bar px-4 py-1.5 text-xs font-mono tracking-widest uppercase text-bone/70">
             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
             AI Video & Audio Translation
@@ -154,13 +154,13 @@ export function Hero() {
             </span>
           </h1>
 
-          <p data-hero-fade className="mt-6 max-w-xl mx-auto md:mx-0 text-base md:text-lg text-bone/60 leading-relaxed">
+          <p data-hero-fade className="mt-6 max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-bone/60 leading-relaxed">
             Translate any video into 42 languages with lip-synced{" "}
             <span className="gold-text font-medium">AI voices</span> that sound like you.
             No dubbing studios. No subtitles. No excuses.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center justify-center md:justify-start gap-3">
+          <div className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-3">
             <a
               data-hero-cta
               href="#cta"
@@ -189,7 +189,7 @@ export function Hero() {
         {/* ------- Right: floating AI translation dashboard --------- */}
         <div
           data-orb-parallax
-          className="relative z-10"
+          className="relative z-10 w-full max-w-xl mx-auto lg:max-w-none lg:mx-0"
           style={{ willChange: "transform", transformStyle: "preserve-3d" }}
         >
           {/* Main ripple-glass dashboard */}
@@ -270,14 +270,14 @@ export function Hero() {
 
           {/* Floating diamond widgets */}
           <div
-            className="glass-diamond floaty hidden md:block absolute -top-8 -right-6 px-5 py-4"
+            className="glass-diamond floaty hidden lg:block absolute -top-8 -right-6 px-5 py-4"
             style={{ animationDelay: "1.6s" }}
           >
             <div className="font-mono text-[9px] tracking-widest uppercase text-stone">Languages</div>
             <div className="mt-1 font-display text-2xl gold-text">42</div>
           </div>
           <div
-            className="glass-diamond floaty hidden md:block absolute -bottom-9 -left-8 px-5 py-4"
+            className="glass-diamond floaty hidden lg:block absolute -bottom-9 -left-8 px-5 py-4"
             style={{ animationDelay: "3.2s" }}
           >
             <div className="flex items-center gap-2">
@@ -290,8 +290,8 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Scroll cue */}
-      <div data-hero-fade className="absolute bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-stone">
+      {/* Scroll cue (desktop only — overlaps stacked content on mobile) */}
+      <div data-hero-fade className="absolute bottom-5 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 text-stone">
         <span className="font-mono text-[10px] tracking-[0.3em] uppercase">Scroll</span>
         <div className="w-px h-10 bg-gradient-to-b from-gold/60 to-transparent" />
       </div>

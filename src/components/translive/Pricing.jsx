@@ -49,13 +49,16 @@ export function Pricing() {
           Three tiers. <span className="gold-text">Zero dubbing studios.</span>
         </h2>
 
-        <div data-reveal-stagger className="mt-16 grid md:grid-cols-3 gap-5 md:gap-6 items-stretch">
+        <div
+          data-reveal-stagger
+          className="mt-16 grid gap-5 md:gap-6 items-stretch max-w-xl mx-auto lg:max-w-none lg:mx-0 lg:grid-cols-3"
+        >
           {TIERS.map((t) => (
             <div
               key={t.name}
               className={
                 t.highlight
-                  ? "glass-diamond gradient-border-anim relative p-8 md:-mt-5 md:mb-[-4px] shadow-[0_0_80px_rgba(77,140,255,0.18)]"
+                  ? "glass-diamond gradient-border-anim relative p-8 lg:-mt-5 lg:mb-[-4px] shadow-[0_0_80px_rgba(79,70,229,0.15)]"
                   : "glass-panel lift-card relative p-8"
               }
             >
@@ -93,25 +96,27 @@ export function Pricing() {
           ))}
         </div>
 
-        {/* Datasheet comparison */}
-        <div className="mt-16 rounded-2xl border border-line overflow-hidden font-mono text-sm">
-          <div className="grid grid-cols-4 bg-ink/80 border-b border-line">
-            <div className="p-4 text-stone text-[10px] tracking-widest uppercase">Feature</div>
-            {TIERS.map((t) => (
-              <div key={t.name} className="p-4 text-[10px] tracking-widest uppercase text-stone">
-                {t.name}
-              </div>
-            ))}
-          </div>
-          <div data-stagger-rows>
-            {MATRIX.map((row, i) => (
-              <div key={i} className={`grid grid-cols-4 ${i % 2 === 0 ? "bg-transparent" : "bg-bone/[0.02]"} border-b border-line last:border-0`}>
-                <div className="p-4 text-bone/70">{row[0]}</div>
-                <div className="p-4 text-bone/90">{row[1]}</div>
-                <div className="p-4 text-gold">{row[2]}</div>
-                <div className="p-4 text-bone/90">{row[3]}</div>
-              </div>
-            ))}
+        {/* Datasheet comparison — scrolls horizontally on small screens */}
+        <div className="mt-16 rounded-2xl border border-line overflow-x-auto font-mono text-sm">
+          <div className="min-w-[620px]">
+            <div className="grid grid-cols-4 bg-ink/80 border-b border-line">
+              <div className="p-4 text-stone text-[10px] tracking-widest uppercase">Feature</div>
+              {TIERS.map((t) => (
+                <div key={t.name} className="p-4 text-[10px] tracking-widest uppercase text-stone">
+                  {t.name}
+                </div>
+              ))}
+            </div>
+            <div data-stagger-rows>
+              {MATRIX.map((row, i) => (
+                <div key={i} className={`grid grid-cols-4 ${i % 2 === 0 ? "bg-transparent" : "bg-bone/[0.02]"} border-b border-line last:border-0`}>
+                  <div className="p-4 text-bone/70">{row[0]}</div>
+                  <div className="p-4 text-bone/90">{row[1]}</div>
+                  <div className="p-4 text-gold">{row[2]}</div>
+                  <div className="p-4 text-bone/90">{row[3]}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

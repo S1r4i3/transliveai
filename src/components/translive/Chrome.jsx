@@ -132,7 +132,7 @@ export function Nav() {
             <a href="#demo" className="hidden md:inline-flex text-sm text-bone/70 hover:text-bone">Sign in</a>
             <a
               href="#cta"
-              className="magnetic-btn iridescent btn-primary inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 text-sm font-medium"
+              className="magnetic-btn iridescent btn-primary hidden min-[400px]:inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 text-sm font-medium"
             >
               Start free
               <span aria-hidden data-arrow>→</span>
