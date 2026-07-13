@@ -3,7 +3,7 @@
 
 const NEON = "#ff3fd0";
 
-function MicGlyph({ height = 32 }) {
+export function MicGlyph({ height = 32 }) {
   return (
     <svg
       viewBox="0 0 64 88"
@@ -43,7 +43,10 @@ export function Logo({ size = 22, tagline = false, className = "" }) {
         <MicGlyph height={size * 1.35} />
       </span>
       {tagline && (
-        <span className="mt-1.5 font-display italic text-[11px] tracking-wide text-bone/60">
+        <span
+          className="mt-1.5 font-display italic tracking-wide text-bone/60"
+          style={{ fontSize: Math.max(11, Math.round(size * 0.34)) }}
+        >
           Real Time Translation — Real World Impact
         </span>
       )}

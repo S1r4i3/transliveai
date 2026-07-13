@@ -1,6 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { prefersReduced, splitWords } from "./motion";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useHeroAnimation } from "./hooks";
+
+/* Code-split: the neural canvas ships in its own chunk and never blocks
+   first paint of the hero content. */
+const NeuralField = lazy(() =>
+  import("./NeuralField").then((m) => ({ default: m.NeuralField })),
+);
 
 const HELLOS = [
   { text: "Every language. One voice. Yours.", lang: "en" },
@@ -33,73 +38,14 @@ export function Hero() {
   const [i, setI] = useState(0);
   const rootRef = useRef(null);
   const titleRef = useRef(null);
-  const revealedRef = useRef(false);
 
   useEffect(() => {
     const t = setInterval(() => setI((v) => (v + 1) % HELLOS.length), 3200);
     return () => clearInterval(t);
   }, []);
 
-  /* Hide the supporting cast until the curtain opens */
-  useEffect(() => {
-    if (prefersReduced()) return;
-    const root = rootRef.current;
-    if (!root || revealedRef.current || window.__tvRevealed) return;
-    gsap.set(root.querySelectorAll("[data-hero-fade], [data-hero-cta]"), {
-      opacity: 0,
-    });
-    gsap.set(root.querySelector("[data-orb-parallax]"), { opacity: 0 });
-  }, []);
-
-  /* Word-by-word headline reveal — on curtain open and on each language cycle */
-  useEffect(() => {
-    const el = titleRef.current;
-    const root = rootRef.current;
-    if (!el || !root || prefersReduced()) return;
-
-    const words = splitWords(el);
-    gsap.set(words, { yPercent: 110 });
-
-    const playWords = () =>
-      gsap.to(words, {
-        yPercent: 0,
-        duration: 0.9,
-        ease: "power3.out",
-        stagger: 0.08,
-      });
-
-    const playEntrance = () => {
-      revealedRef.current = true;
-      const tl = gsap.timeline();
-      tl.add(playWords(), 0)
-        .fromTo(
-          root.querySelectorAll("[data-hero-fade]"),
-          { y: 24, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.9, ease: "power3.out", stagger: 0.1 },
-          0.3,
-        )
-        .fromTo(
-          root.querySelectorAll("[data-hero-cta]"),
-          { scale: 0.9, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.08 },
-          0.45,
-        )
-        .fromTo(
-          root.querySelector("[data-orb-parallax]"),
-          { opacity: 0, y: 60, rotationY: -10 },
-          { opacity: 1, y: 0, rotationY: 0, duration: 1.2, ease: "power3.out" },
-          0.35,
-        );
-    };
-
-    if (revealedRef.current || window.__tvRevealed) {
-      if (revealedRef.current) playWords();
-      else playEntrance();
-      return;
-    }
-    window.addEventListener("tv:reveal", playEntrance, { once: true });
-    return () => window.removeEventListener("tv:reveal", playEntrance);
-  }, [i]);
+  /* Master entrance timeline + per-cycle word reveal (see hooks.js) */
+  useHeroAnimation(rootRef, titleRef, i);
 
   return (
     <section
@@ -123,6 +69,10 @@ export function Hero() {
       {/* Fractured glass accents in the corners */}
       <div className="glass-fracture w-[380px] h-[380px] -top-24 -right-20" aria-hidden />
       <div className="glass-fracture w-[280px] h-[280px] -bottom-16 -left-14 opacity-[0.05]" aria-hidden />
+      {/* AI neural field — nodes, synapses, drifting glyphs, cursor-reactive */}
+      <Suspense fallback={null}>
+        <NeuralField />
+      </Suspense>
       {PARTICLES.map((p, k) => (
         <span
           key={k}
@@ -196,7 +146,7 @@ export function Hero() {
           <div className="glass-ripple floaty p-6 md:p-7">
             <span className="sweep-layer" aria-hidden />
             {/* Header: title + API status */}
-            <div className="flex items-center justify-between">
+            <div data-dash-item className="flex items-center justify-between">
               <div className="font-display text-lg tracking-tight text-bone">
                 Translation Studio
               </div>
@@ -207,7 +157,7 @@ export function Hero() {
             </div>
 
             {/* Language chips */}
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div data-dash-item className="mt-5 flex flex-wrap gap-2">
               {CHIPS.map((c, k) => (
                 <span
                   key={c}
@@ -225,14 +175,14 @@ export function Hero() {
             {/* Translation timeline */}
             <div className="mt-6 space-y-4">
               {TIMELINE.map((row) => (
-                <div key={row.label}>
+                <div key={row.label} data-dash-item>
                   <div className="flex items-center justify-between font-mono text-[10px] tracking-widest uppercase text-bone/55">
                     <span>{row.label}</span>
                     <span className="text-gold">{row.pct}%</span>
                   </div>
                   <div className="mt-1.5 h-1.5 rounded-full bg-bone/10 overflow-hidden">
                     <div
-                      className={`h-full rounded-full bg-gradient-to-r ${row.tone}`}
+                      className={`dash-fill h-full rounded-full bg-gradient-to-r ${row.tone}`}
                       style={{ width: `${row.pct}%` }}
                     />
                   </div>
@@ -241,7 +191,7 @@ export function Hero() {
             </div>
 
             {/* Audio waveform */}
-            <div className="mt-6 flex items-end gap-0.5 h-10">
+            <div data-dash-item className="mt-6 flex items-end gap-0.5 h-10">
               {Array.from({ length: 44 }).map((_, k) => (
                 <span
                   key={k}
@@ -256,20 +206,21 @@ export function Hero() {
             </div>
 
             {/* Footer row: voice clone + latency */}
-            <div className="mt-6 grid grid-cols-2 gap-3">
+            <div data-dash-item className="mt-6 grid grid-cols-2 gap-3">
               <div className="rounded-xl border border-line bg-glass px-4 py-3">
                 <div className="font-mono text-[9px] tracking-widest uppercase text-stone">Voice clone</div>
-                <div className="mt-1 font-display text-xl gold-text">98.2%</div>
+                <div className="mt-1 font-display text-xl gold-text" data-count="98.2" data-decimals="1" data-suffix="%">98.2%</div>
               </div>
               <div className="rounded-xl border border-line bg-glass px-4 py-3">
                 <div className="font-mono text-[9px] tracking-widest uppercase text-stone">Latency</div>
-                <div className="mt-1 font-display text-xl text-bone">0.4s</div>
+                <div className="mt-1 font-display text-xl text-bone" data-count="0.4" data-decimals="1" data-suffix="s">0.4s</div>
               </div>
             </div>
           </div>
 
           {/* Floating diamond widgets */}
           <div
+            data-tilt
             className="glass-diamond floaty hidden lg:block absolute -top-8 -right-6 px-5 py-4"
             style={{ animationDelay: "1.6s" }}
           >
@@ -277,6 +228,7 @@ export function Hero() {
             <div className="mt-1 font-display text-2xl gold-text">42</div>
           </div>
           <div
+            data-tilt
             className="glass-diamond floaty hidden lg:block absolute -bottom-9 -left-8 px-5 py-4"
             style={{ animationDelay: "3.2s" }}
           >

@@ -5,7 +5,6 @@ const TIERS = [
     period: "/mo",
     tag: "Try the engine",
     features: ["60 min/month", "12 languages", "Lip-sync (720p)", "Watermarked exports", "Community support"],
-    rings: 1,
     cta: "Start free",
   },
   {
@@ -14,7 +13,6 @@ const TIERS = [
     period: "/mo",
     tag: "For creators",
     features: ["1,200 min/month", "42 languages", "Lip-sync (4K)", "Voice cloning · 3 voices", "Vocal remover", "Priority queue"],
-    rings: 3,
     cta: "Go Pro",
     highlight: true,
   },
@@ -24,7 +22,6 @@ const TIERS = [
     period: "",
     tag: "Studios & platforms",
     features: ["Unlimited minutes", "42 languages + custom", "API access · webhooks", "Unlimited voice clones", "SSO & audit logs", "SLA 99.95%"],
-    rings: 5,
     cta: "Talk to sales",
   },
 ];
@@ -56,6 +53,7 @@ export function Pricing() {
           {TIERS.map((t) => (
             <div
               key={t.name}
+              data-tilt
               className={
                 t.highlight
                   ? "glass-diamond gradient-border-anim relative p-8 lg:-mt-5 lg:mb-[-4px] shadow-[0_0_80px_rgba(79,70,229,0.15)]"

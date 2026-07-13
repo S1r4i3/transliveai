@@ -108,7 +108,7 @@
     letter-spacing: -0.03em;
     font-weight: 500;
   }
-  ::selection { background: var(--gold); color: var(--ink); }
+  ::selection { background: var(--gold); color: #ffffff; }
 }
 
 @utility grain {
@@ -184,12 +184,6 @@
   0%, 100% { opacity: 0.6; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.05); }
 }
-@keyframes float-up {
-  0% { transform: translateY(20px); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(-80px); opacity: 0; }
-}
 @keyframes marquee-x {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -197,10 +191,6 @@
 @keyframes marquee-x-reverse {
   from { transform: translateX(-50%); }
   to { transform: translateX(0); }
-}
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
 }
 @keyframes waveform {
   0%, 100% { transform: scaleY(0.3); }
@@ -314,10 +304,204 @@
   pointer-events: none;
 }
 
+/* ---------------------------------------------------------------- */
+/* Preloader                                                          */
+/* ---------------------------------------------------------------- */
+
+/* wordmark language swap: rise + blur-reveal */
+.tv-name-in {
+  display: inline-block;
+  animation: tv-name-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes tv-name-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* keep-scrolling chevron bob */
+.nudge-bob {
+  display: inline-block;
+  animation: nudge-bob 1.2s ease-in-out infinite;
+}
+@keyframes nudge-bob {
+  0%, 100% { transform: translateY(-1px); }
+  50% { transform: translateY(3px); }
+}
+
+/* neon mic breathing */
+.mic-breathe {
+  display: inline-block;
+  animation: mic-breathe 2.4s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes mic-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* loader bar: indigo→cyan gradient with travelling shimmer */
+.tv-loader-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 9999px;
+  transform-origin: left;
+  background: linear-gradient(90deg, #8b5cf6, #4f46e5 40%, #06b6d4 75%, #8b5cf6);
+  background-size: 220% 100%;
+  animation: tv-loader-shimmer 1.6s linear infinite;
+  box-shadow: 0 0 12px rgba(79, 70, 229, 0.45);
+  will-change: transform;
+}
+@keyframes tv-loader-shimmer {
+  from { background-position: 0% 0; }
+  to { background-position: -220% 0; }
+}
+
+/* glowing dot riding the leading edge */
+.tv-loader-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 3px rgba(79, 70, 229, 0.35),
+    0 0 14px rgba(79, 70, 229, 0.8),
+    0 0 30px rgba(6, 182, 212, 0.6);
+  will-change: transform;
+}
+
 /* Custom cursor hides the system cursor while active */
 body.tv-cursor-on,
 body.tv-cursor-on * {
   cursor: none !important;
+}
+
+/* ---------------------------------------------------------------- */
+/* Tactile layer: tilt, spotlight, ripples, nav & link micro-motion  */
+/* ---------------------------------------------------------------- */
+
+/* 3D tilt cards (rotation driven by JS) + cursor-follow spotlight */
+[data-tilt] {
+  position: relative;
+  will-change: transform;
+}
+.spotlight-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.65),
+    rgba(79, 70, 229, 0.06) 45%,
+    transparent 65%
+  );
+}
+[data-tilt]:hover .spotlight-overlay {
+  opacity: 1;
+}
+
+/* Button click ripple (lives in its own clipped layer so the
+   iridescent glow pseudos outside the button aren't clipped) */
+.ripple-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.tv-ripple {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 60%);
+  animation: tv-ripple 0.6s ease-out forwards;
+}
+@keyframes tv-ripple {
+  to {
+    width: 240px;
+    height: 240px;
+    opacity: 0;
+  }
+}
+
+/* Cursor click ripple ring */
+.cursor-rip {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border: 1.5px solid rgba(79, 70, 229, 0.7);
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 9997;
+  animation: cursor-rip 0.5s ease-out forwards;
+}
+@keyframes cursor-rip {
+  from { transform: scale(0.5); opacity: 0.9; }
+  to { transform: scale(2.4); opacity: 0; }
+}
+
+/* Nav links: gradient underline grows on hover; stays on active section */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -6px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #8b5cf6, #4f46e5, #06b6d4);
+  transition: right 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+  right: 0;
+}
+.nav-link.active {
+  color: var(--bone);
+}
+
+/* Footer links: underline grows from the left */
+footer ul a {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.3s ease, color 0.3s ease;
+}
+footer ul a:hover {
+  background-size: 100% 1px;
+}
+
+/* Input focus lighting (newsletter) */
+footer form {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+footer form:focus-within {
+  border-color: rgba(79, 70, 229, 0.45);
+  box-shadow:
+    0 0 0 3px rgba(79, 70, 229, 0.12),
+    0 0 24px rgba(79, 70, 229, 0.18);
 }
 
 /* ================================================================ */
@@ -639,7 +823,14 @@ body.tv-cursor-on * {
   border: 2px solid var(--electric-border-color);
   margin-top: -4px;
   margin-left: -4px;
-  filter: url(#turbulent-displace);
+  /* the expensive displacement filter is gated: it only runs while the
+     Tools grid is on screen, on desktop, without reduced-motion */
+  filter: none;
+}
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .electric-on .electric-card .main-card {
+    filter: url(#turbulent-displace);
+  }
 }
 
 /* Glow effects */
@@ -719,15 +910,39 @@ body.tv-cursor-on * {
   mask-image: linear-gradient(to right, transparent, black, transparent);
 }
 
-/* Static border for reduced motion (SMIL keeps running; hide its effect) */
-@media (prefers-reduced-motion: reduce) {
-  .electric-card .main-card {
-    filter: none;
+/* ---------------------------------------------------------------- */
+/* Performance: off-screen and mobile budgets                        */
+/* ---------------------------------------------------------------- */
+
+/* Decorative CSS animations pause while their section is off-screen
+   (class toggled by an IntersectionObserver in motion.js) */
+.anims-paused,
+.anims-paused * {
+  animation-play-state: paused !important;
+}
+
+/* Mobile: cheaper glass, no grain layer, no rays, static aurora */
+@media (max-width: 767px) {
+  .glass-ripple,
+  .glass-panel,
+  .glass-diamond,
+  .glass-bar {
+    backdrop-filter: blur(12px) saturate(140%);
+  }
+  .grain::after {
+    display: none;
+  }
+  .light-rays {
+    display: none;
+  }
+  .aurora {
+    animation: none;
+    opacity: 0.45;
   }
 }
 
 /* ---------------------------------------------------------------- */
-/* Iridescent glass buttons (adapted for dark theme)                 */
+/* Iridescent glass buttons (light theme)                            */
 /* markup: <button class="iridescent">Label<span class="drop-shadow"/></button> */
 /* ---------------------------------------------------------------- */
 

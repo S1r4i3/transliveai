@@ -37,18 +37,42 @@ export function useCursor() {
     // Movement is transform-only (never top/left) to stay compositor-friendly.
     let x = 0, y = 0, rx = 0, ry = 0;
     let rafId = 0;
+    let mode = "default";
     const onMove = (e) => {
       x = e.clientX; y = e.clientY;
       dot.style.transform = `translate3d(${x}px,${y}px,0) translate(-50%,-50%)`;
     };
     const loop = () => {
-      rx += (x - rx) * 0.15; ry += (y - ry) * 0.15; // 0.15 lerp trail
-      ring.style.transform = `translate3d(${rx}px,${ry}px,0) translate(-50%,-50%)`;
+      const dx = x - rx, dy = y - ry;
+      rx += dx * 0.15; ry += dy * 0.15; // 0.15 lerp trail
+      // velocity stretch: the ring elongates along its direction of travel
+      let stretch = "";
+      if (mode === "default") {
+        const speed = Math.hypot(dx, dy);
+        const k = Math.min(0.3, speed / 900);
+        if (k > 0.02) {
+          const ang = Math.atan2(dy, dx);
+          stretch = ` rotate(${ang}rad) scale(${1 + k}, ${1 - k * 0.5}) rotate(${-ang}rad)`;
+        }
+      }
+      ring.style.transform = `translate3d(${rx}px,${ry}px,0) translate(-50%,-50%)${stretch}`;
       rafId = requestAnimationFrame(loop);
     };
     rafId = requestAnimationFrame(loop);
 
-    const setMode = (mode, label = "") => {
+    // click ripple ring
+    const onDown = (e) => {
+      const rip = document.createElement("div");
+      rip.className = "cursor-rip";
+      rip.style.left = `${e.clientX}px`;
+      rip.style.top = `${e.clientY}px`;
+      document.body.appendChild(rip);
+      setTimeout(() => rip.remove(), 550);
+    };
+    window.addEventListener("pointerdown", onDown);
+
+    const setMode = (next, label = "") => {
+      mode = next;
       ring.textContent = mode === "label" ? label : "";
       if (mode === "label") {
         // 60px, filled, shows PLAY / DRAG
@@ -84,6 +108,7 @@ export function useCursor() {
       cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseover", onOver);
+      window.removeEventListener("pointerdown", onDown);
       dot.remove(); ring.remove();
       document.body.classList.remove("tv-cursor-on");
     };
@@ -123,10 +148,10 @@ export function Nav() {
             <Logo size={20} />
           </a>
           <nav className="hidden md:flex items-center gap-8 text-sm text-bone/70">
-            <a href="#features" className="hover:text-bone transition">Product</a>
-            <a href="#demo" className="hover:text-bone transition">Demo</a>
-            <a href="#pricing" className="hover:text-bone transition">Pricing</a>
-            <a href="#engine" className="hover:text-bone transition">Engine</a>
+            <a href="#features" className="nav-link hover:text-bone transition">Product</a>
+            <a href="#demo" className="nav-link hover:text-bone transition">Demo</a>
+            <a href="#pricing" className="nav-link hover:text-bone transition">Pricing</a>
+            <a href="#engine" className="nav-link hover:text-bone transition">Engine</a>
           </nav>
           <div className="flex items-center gap-3">
             <a href="#demo" className="hidden md:inline-flex text-sm text-bone/70 hover:text-bone">Sign in</a>

@@ -47,21 +47,21 @@ function ElectricFilter() {
         >
           {/* two vertically scrolling noise fields, opposite directions —
               they crossfade each other's wrap seam */}
-          <feTurbulence type="turbulence" baseFrequency="0.02 0.03" numOctaves="5" seed="1" result="noise1" />
+          <feTurbulence type="turbulence" baseFrequency="0.02 0.03" numOctaves="3" seed="1" result="noise1" />
           <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
             <animate attributeName="dy" values="700; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
           </feOffset>
-          <feTurbulence type="turbulence" baseFrequency="0.02 0.03" numOctaves="5" seed="1" result="noise2" />
+          <feTurbulence type="turbulence" baseFrequency="0.02 0.03" numOctaves="3" seed="1" result="noise2" />
           <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
             <animate attributeName="dy" values="0; -700" dur="6s" repeatCount="indefinite" calcMode="linear" />
           </feOffset>
 
           {/* two horizontally scrolling fields, same trick */}
-          <feTurbulence type="turbulence" baseFrequency="0.02 0.03" numOctaves="5" seed="2" result="noise3" />
+          <feTurbulence type="turbulence" baseFrequency="0.02 0.03" numOctaves="3" seed="2" result="noise3" />
           <feOffset in="noise3" dx="0" dy="0" result="offsetNoise3">
             <animate attributeName="dx" values="490; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
           </feOffset>
-          <feTurbulence type="turbulence" baseFrequency="0.02 0.03" numOctaves="5" seed="2" result="noise4" />
+          <feTurbulence type="turbulence" baseFrequency="0.02 0.03" numOctaves="3" seed="2" result="noise4" />
           <feOffset in="noise4" dx="0" dy="0" result="offsetNoise4">
             <animate attributeName="dx" values="0; -490" dur="6s" repeatCount="indefinite" calcMode="linear" />
           </feOffset>
@@ -95,7 +95,7 @@ export function Features() {
 
         <div data-reveal-stagger className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
           {FEATURES.map((f) => (
-            <div key={f.title} className="electric-card">
+            <div key={f.title} data-tilt className="electric-card">
               <div className="inner-container">
                 {/* electric border stack */}
                 <div className="border-outer">

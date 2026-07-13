@@ -92,6 +92,31 @@ export function useMotion() {
     document.addEventListener("click", onAnchorClick);
     cleanups.push(() => document.removeEventListener("click", onAnchorClick));
 
+    /* --- Perf: pause decorative CSS animations off-screen, and gate the
+       expensive electric-border filter to when the Tools grid is visible --- */
+    if (typeof IntersectionObserver !== "undefined") {
+      const blocks = document.querySelectorAll("main > *, footer");
+      const pauseIO = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((en) =>
+            en.target.classList.toggle("anims-paused", !en.isIntersecting),
+          ),
+        { rootMargin: "160px 0px" },
+      );
+      blocks.forEach((b) => pauseIO.observe(b));
+      cleanups.push(() => pauseIO.disconnect());
+
+      const tools = document.getElementById("tools");
+      if (tools) {
+        const electricIO = new IntersectionObserver(
+          ([en]) => tools.classList.toggle("electric-on", en.isIntersecting),
+          { rootMargin: "120px 0px" },
+        );
+        electricIO.observe(tools);
+        cleanups.push(() => electricIO.disconnect());
+      }
+    }
+
     const ctx = gsap.context(() => {
       /* ============================================================ */
       /* Reduced motion: simple fades only, no scrub / pin / parallax  */
@@ -113,7 +138,7 @@ export function useMotion() {
       }
 
       /* ============================================================ */
-      /* 4a. Per-word gradient fill-on-scroll for section headlines    */
+      /* Per-word gradient fill-on-scroll for section headlines        */
       /* ============================================================ */
       const DIM = "rgba(17,24,39,0.14)";
       gsap.utils.toArray("main section h2:not([data-no-fill])").forEach((h2) => {
@@ -149,7 +174,7 @@ export function useMotion() {
       });
 
       /* ============================================================ */
-      /* 4b. Paragraph fade-ups (30px, once, 0.7s, stagger 0.1)        */
+      /* Paragraph fade-ups (30px, once, 0.7s, stagger 0.1)            */
       /* ============================================================ */
       const paras = gsap.utils
         .toArray("main section p, [data-lead], [data-reveal]")
@@ -159,7 +184,7 @@ export function useMotion() {
             !el.closest("#top") &&
             !el.closest("[data-reveal-stagger]"),
         );
-      gsap.set(paras, { y: 30, opacity: 0 });
+      gsap.set(paras, { y: 30, opacity: 0, filter: "blur(4px)" });
       ScrollTrigger.batch(paras, {
         start: "top 80%",
         once: true,
@@ -167,25 +192,30 @@ export function useMotion() {
           gsap.to(batch, {
             y: 0,
             opacity: 1,
+            filter: "blur(0px)",
             duration: 0.7,
             ease: "power2.out",
             stagger: 0.1,
+            clearProps: "filter",
           }),
       });
 
-      /* Stagger children of a parent with [data-reveal-stagger] */
+      /* Cards materialize: blur → sharp, scale .97 → 1, rising stagger */
       gsap.utils.toArray("[data-reveal-stagger]").forEach((parent) => {
         gsap.from(parent.children, {
-          y: 30,
+          y: 40,
           opacity: 0,
+          scale: 0.97,
+          filter: "blur(6px)",
           duration: 0.7,
           ease: "power2.out",
           stagger: 0.08,
+          clearProps: "filter,scale",
           scrollTrigger: { trigger: parent, start: "top 82%", once: true },
         });
       });
 
-      /* 7b. Datasheet rows: stagger-fade 0.05s apart */
+      /* Datasheet rows: stagger-fade 0.05s apart */
       gsap.utils.toArray("[data-stagger-rows]").forEach((parent) => {
         gsap.from(parent.children, {
           y: 16,
@@ -198,7 +228,7 @@ export function useMotion() {
       });
 
       /* ============================================================ */
-      /* 6. Magnetic buttons (±8px pull, elastic return, scale 1.04)   */
+      /* Magnetic buttons (±8px pull, elastic return, scale 1.04)      */
       /* ============================================================ */
       const clamp8 = gsap.utils.clamp(-8, 8);
       document.querySelectorAll(".magnetic-btn").forEach((btn) => {
@@ -226,6 +256,79 @@ export function useMotion() {
       });
 
       /* ============================================================ */
+      /* Tactile cards: 3D tilt + cursor-follow spotlight              */
+      /* ============================================================ */
+      if (window.matchMedia("(pointer: fine)").matches) {
+        document.querySelectorAll("[data-tilt]").forEach((card) => {
+          const spot = document.createElement("span");
+          spot.className = "spotlight-overlay";
+          card.appendChild(spot);
+          gsap.set(card, { transformPerspective: 800 });
+          const rx = gsap.quickTo(card, "rotationX", { duration: 0.5, ease: "power2.out" });
+          const ry = gsap.quickTo(card, "rotationY", { duration: 0.5, ease: "power2.out" });
+          const onMove = (e) => {
+            const r = card.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width;
+            const py = (e.clientY - r.top) / r.height;
+            ry((px - 0.5) * 10);
+            rx((0.5 - py) * 8);
+            card.style.setProperty("--mx", `${px * 100}%`);
+            card.style.setProperty("--my", `${py * 100}%`);
+          };
+          const onLeave = () => {
+            rx(0);
+            ry(0);
+          };
+          card.addEventListener("pointermove", onMove);
+          card.addEventListener("pointerleave", onLeave);
+          cleanups.push(() => {
+            card.removeEventListener("pointermove", onMove);
+            card.removeEventListener("pointerleave", onLeave);
+            spot.remove();
+          });
+        });
+      }
+
+      /* ============================================================ */
+      /* Click ripple on every iridescent button                       */
+      /* ============================================================ */
+      document.querySelectorAll(".iridescent").forEach((btn) => {
+        const layer = document.createElement("span");
+        layer.className = "ripple-layer";
+        layer.setAttribute("aria-hidden", "true");
+        btn.appendChild(layer);
+        const onClick = (e) => {
+          const r = btn.getBoundingClientRect();
+          const rip = document.createElement("span");
+          rip.className = "tv-ripple";
+          rip.style.left = `${e.clientX - r.left}px`;
+          rip.style.top = `${e.clientY - r.top}px`;
+          layer.appendChild(rip);
+          setTimeout(() => rip.remove(), 650);
+        };
+        btn.addEventListener("click", onClick);
+        cleanups.push(() => {
+          btn.removeEventListener("click", onClick);
+          layer.remove();
+        });
+      });
+
+      /* ============================================================ */
+      /* Nav scrollspy: gradient underline tracks the active section   */
+      /* ============================================================ */
+      ["features", "demo", "pricing", "engine"].forEach((id) => {
+        const section = document.getElementById(id);
+        const link = document.querySelector(`header .nav-link[href="#${id}"]`);
+        if (!section || !link) return;
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top 45%",
+          end: "bottom 45%",
+          onToggle: (self) => link.classList.toggle("active", self.isActive),
+        });
+      });
+
+      /* ============================================================ */
       /* Intro shine: iridescent buttons flash their sheen once,      */
       /* staggered, right after the preloader curtain opens.          */
       /* ============================================================ */
@@ -246,7 +349,7 @@ export function useMotion() {
       }
 
       /* ============================================================ */
-      /* 9. Navbar hide on scroll-down, reveal on scroll-up (0.3s)     */
+      /* Navbar hide on scroll-down, reveal on scroll-up (0.3s)        */
       /* ============================================================ */
       const nav = document.querySelector("header.fixed");
       if (nav) {
@@ -264,7 +367,7 @@ export function useMotion() {
       }
 
       /* ============================================================ */
-      /* 2b. Mouse parallax: orb tilts ±3°, glow shifts ±15px, 0.8s lag */
+      /* Mouse parallax: orb tilts ±3°, glow shifts ±15px, 0.8s lag    */
       /* ============================================================ */
       const orb = document.querySelector("[data-orb-parallax]");
       const glow = document.querySelector("[data-glow-parallax]");
@@ -296,7 +399,7 @@ export function useMotion() {
       }
 
       /* ============================================================ */
-      /* 5b. Marquee speed subtly increases with scroll velocity       */
+      /* Marquee speed subtly increases with scroll velocity           */
       /* ============================================================ */
       document.querySelectorAll("[data-marquee-track]").forEach((track) => {
         ScrollTrigger.create({

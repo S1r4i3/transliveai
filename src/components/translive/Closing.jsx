@@ -268,7 +268,7 @@ export function Footer() {
               className="rounded-full border border-line bg-glass px-3 py-1.5 text-sm text-bone/90 outline-none focus:border-gold"
             >
               {LOCALES.map((l) => (
-                <option key={l.code} value={l.code} className="bg-ink">{l.label}</option>
+                <option key={l.code} value={l.code}>{l.label}</option>
               ))}
             </select>
             <div className="flex items-center gap-2 ml-2">

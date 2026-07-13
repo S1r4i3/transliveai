@@ -34,7 +34,7 @@ function Index() {
   useCursor();
   useMotion();
   return (
-    // transparent wrapper — the body's dark-luxury gradient shows through
+    // transparent wrapper — the body's ambient gradient shows through
     <div className="grain relative min-h-screen text-bone">
       <Preloader />
       <Nav />

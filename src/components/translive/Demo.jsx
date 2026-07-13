@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useDemoReveal } from "./hooks";
 
 const LANGS = [
   { code: "hi", flag: "🇮🇳", name: "Hindi", sample: "मेरा वीडियो हर भाषा में बोलता है।" },
@@ -17,6 +18,8 @@ export function Demo() {
   const [playing, setPlaying] = useState(false);
   const target = LANGS[lang].sample;
   const iRef = useRef(0);
+  const panelWrapRef = useRef(null);
+  useDemoReveal(panelWrapRef);
 
   useEffect(() => {
     setTyped("");
@@ -55,39 +58,44 @@ export function Demo() {
             </div>
           </div>
 
+          <div ref={panelWrapRef} style={{ willChange: "transform" }}>
           <div className="glass-ripple p-6 md:p-8">
             <span className="sweep-layer" aria-hidden />
-            <div className="font-mono text-[10px] tracking-widest text-stone uppercase">Source</div>
-            <div className="mt-2 font-display text-xl md:text-2xl text-bone/95">
-              My video speaks in every language.
+            <div data-demo-step>
+              <div className="font-mono text-[10px] tracking-widest text-stone uppercase">Source</div>
+              <div className="mt-2 font-display text-xl md:text-2xl text-bone/95">
+                My video speaks in every language.
+              </div>
             </div>
 
-            <div className="mt-6 font-mono text-[10px] tracking-widest text-stone uppercase">Target</div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {LANGS.map((l, i) => (
-                <button
-                  key={l.code}
-                  onClick={() => setLang(i)}
-                  className={`chip-pop rounded-full border px-3 py-1.5 text-xs transition-colors ${
-                    lang === i
-                      ? "border-gold bg-gold text-ink"
-                      : "border-line bg-glass text-bone/70 hover:border-gold/50"
-                  }`}
-                >
-                  <span className="mr-1">{l.flag}</span>
-                  {l.name}
-                </button>
-              ))}
+            <div data-demo-step>
+              <div className="mt-6 font-mono text-[10px] tracking-widest text-stone uppercase">Target</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {LANGS.map((l, i) => (
+                  <button
+                    key={l.code}
+                    onClick={() => setLang(i)}
+                    className={`chip-pop rounded-full border px-3 py-1.5 text-xs transition-colors ${
+                      lang === i
+                        ? "border-gold bg-gold text-white"
+                        : "border-line bg-glass text-bone/70 hover:border-gold/50"
+                    }`}
+                  >
+                    <span className="mr-1">{l.flag}</span>
+                    {l.name}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="mt-6 rounded-xl border border-line bg-ink/60 p-5 min-h-[110px]">
+            <div data-demo-step className="mt-6 rounded-xl border border-line bg-ink/60 p-5 min-h-[110px]">
               <div className="font-display text-xl md:text-2xl leading-relaxed text-bone" lang={LANGS[lang].code}>
                 {typed}
                 <span className="inline-block w-[2px] h-6 bg-gold ml-0.5 align-middle animate-pulse" />
               </div>
             </div>
 
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+            <div data-demo-step className="mt-5 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-end gap-0.5 h-8 flex-1 min-w-[140px]">
                 {Array.from({ length: 40 }).map((_, i) => (
                   <span
@@ -111,6 +119,7 @@ export function Demo() {
                 <span className="drop-shadow" aria-hidden />
               </button>
             </div>
+          </div>
           </div>
         </div>
       </div>

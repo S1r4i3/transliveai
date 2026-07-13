@@ -36,19 +36,58 @@ const SCENES = [
   },
 ];
 
-const CHIPS = [
-  { code: "EN", name: "English", flag: "🇺🇸" },
-  { code: "HI", name: "हिंदी", flag: "🇮🇳" },
-  { code: "TE", name: "తెలుగు", flag: "🇮🇳" },
-  { code: "KO", name: "한국어", flag: "🇰🇷" },
-  { code: "JA", name: "日本語", flag: "🇯🇵" },
-  { code: "ES", name: "Español", flag: "🇪🇸" },
-  { code: "FR", name: "Français", flag: "🇫🇷" },
-  { code: "AR", name: "العربية", flag: "🇸🇦" },
-  { code: "PT", name: "Português", flag: "🇧🇷" },
-  { code: "DE", name: "Deutsch", flag: "🇩🇪" },
-  { code: "IT", name: "Italiano", flag: "🇮🇹" },
-  { code: "TR", name: "Türkçe", flag: "🇹🇷" },
+/* All 42 languages — flag images (flagcdn) render correctly on every OS,
+   unlike emoji flags which fall back to letter pairs on Windows. */
+const LANGS_42 = [
+  { code: "EN", cc: "us", name: "English" },
+  { code: "HI", cc: "in", name: "हिंदी" },
+  { code: "TE", cc: "in", name: "తెలుగు" },
+  { code: "TA", cc: "in", name: "தமிழ்" },
+  { code: "BN", cc: "bd", name: "বাংলা" },
+  { code: "UR", cc: "pk", name: "اردو" },
+  { code: "NE", cc: "np", name: "नेपाली" },
+  { code: "SI", cc: "lk", name: "සිංහල" },
+  { code: "KO", cc: "kr", name: "한국어" },
+  { code: "JA", cc: "jp", name: "日本語" },
+  { code: "ZH", cc: "cn", name: "中文" },
+  { code: "TH", cc: "th", name: "ไทย" },
+  { code: "VI", cc: "vn", name: "Tiếng Việt" },
+  { code: "ID", cc: "id", name: "Bahasa Indonesia" },
+  { code: "MS", cc: "my", name: "Bahasa Melayu" },
+  { code: "TL", cc: "ph", name: "Filipino" },
+  { code: "KM", cc: "kh", name: "ខ្មែរ" },
+  { code: "MY", cc: "mm", name: "မြန်မာ" },
+  { code: "ES", cc: "es", name: "Español" },
+  { code: "PT", cc: "br", name: "Português" },
+  { code: "FR", cc: "fr", name: "Français" },
+  { code: "DE", cc: "de", name: "Deutsch" },
+  { code: "IT", cc: "it", name: "Italiano" },
+  { code: "NL", cc: "nl", name: "Nederlands" },
+  { code: "PL", cc: "pl", name: "Polski" },
+  { code: "SV", cc: "se", name: "Svenska" },
+  { code: "NO", cc: "no", name: "Norsk" },
+  { code: "DA", cc: "dk", name: "Dansk" },
+  { code: "FI", cc: "fi", name: "Suomi" },
+  { code: "EL", cc: "gr", name: "Ελληνικά" },
+  { code: "CS", cc: "cz", name: "Čeština" },
+  { code: "HU", cc: "hu", name: "Magyar" },
+  { code: "RO", cc: "ro", name: "Română" },
+  { code: "UK", cc: "ua", name: "Українська" },
+  { code: "RU", cc: "ru", name: "Русский" },
+  { code: "TR", cc: "tr", name: "Türkçe" },
+  { code: "AR", cc: "sa", name: "العربية" },
+  { code: "HE", cc: "il", name: "עברית" },
+  { code: "FA", cc: "ir", name: "فارسی" },
+  { code: "SW", cc: "ke", name: "Kiswahili" },
+  { code: "AM", cc: "et", name: "አማርኛ" },
+  { code: "AF", cc: "za", name: "Afrikaans" },
+];
+
+/* three concentric orbits: 8 + 14 + 20 = 42 */
+const ORBITS = [
+  { count: 8, r: 21 },
+  { count: 14, r: 34 },
+  { count: 20, r: 47 },
 ];
 
 function SceneVideo() {
@@ -136,37 +175,54 @@ function SceneVocal() {
 
 function SceneLanguages() {
   const [hover, setHover] = useState(null);
+  let idx = 0;
   return (
     <div className="relative w-full max-w-md aspect-square">
-      <div className="absolute inset-0 rounded-full border border-line" />
-      <div className="absolute inset-[15%] rounded-full border border-line" />
-      <div className="absolute inset-[30%] rounded-full border border-gold/30 animate-orb-pulse" />
+      <div className="absolute inset-[3%] rounded-full border border-line" />
+      <div className="absolute inset-[16%] rounded-full border border-line" />
+      <div className="absolute inset-[29%] rounded-full border border-line" />
+      <div className="absolute inset-[38%] rounded-full border border-gold/30 animate-orb-pulse" />
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center">
-          <div className="font-mono text-[10px] tracking-widest text-stone">HEADLINE</div>
-          <div className="mt-1 font-display text-xl text-bone">
-            {hover !== null ? CHIPS[hover].name : "One voice. Every tongue."}
+        <div className="text-center px-16">
+          <div className="font-mono text-[10px] tracking-widest text-stone">
+            {hover !== null ? LANGS_42[hover].code : "42 LANGUAGES"}
+          </div>
+          <div className="mt-1 font-display text-lg md:text-xl text-bone leading-tight">
+            {hover !== null ? LANGS_42[hover].name : "One voice. Every tongue."}
           </div>
         </div>
       </div>
-      {CHIPS.map((c, i) => {
-        const angle = (i / CHIPS.length) * Math.PI * 2 - Math.PI / 2;
-        const r = 46;
-        const x = 50 + Math.cos(angle) * r;
-        const y = 50 + Math.sin(angle) * r;
-        return (
-          <button
-            key={c.code}
-            onMouseEnter={() => setHover(i)}
-            onMouseLeave={() => setHover(null)}
-            className="chip-pop absolute flex items-center gap-1.5 rounded-full border border-line bg-ink/80 backdrop-blur px-2.5 py-1 text-xs font-mono hover:bg-gold hover:text-ink hover:border-gold"
-            style={{ left: `${x}%`, top: `${y}%`, transform: "translate(-50%,-50%)" }}
-          >
-            <span>{c.flag}</span>
-            <span>{c.code}</span>
-          </button>
-        );
-      })}
+      {ORBITS.map((orbit, o) =>
+        Array.from({ length: orbit.count }).map((_, k) => {
+          const c = LANGS_42[idx++];
+          // stagger each ring's starting angle so chips don't align in spokes
+          const angle = (k / orbit.count) * Math.PI * 2 - Math.PI / 2 + o * 0.35;
+          const x = 50 + Math.cos(angle) * orbit.r;
+          const y = 50 + Math.sin(angle) * orbit.r;
+          const i = idx - 1;
+          return (
+            <button
+              key={c.code + c.cc}
+              onMouseEnter={() => setHover(i)}
+              onMouseLeave={() => setHover(null)}
+              aria-label={c.name}
+              className="chip-pop absolute flex items-center gap-1 rounded-full border border-line bg-ink/85 backdrop-blur px-1.5 py-0.5 font-mono text-[9px] hover:bg-gold hover:text-white hover:border-gold"
+              style={{ left: `${x}%`, top: `${y}%`, transform: "translate(-50%,-50%)" }}
+            >
+              <img
+                src={`https://flagcdn.com/w20/${c.cc}.png`}
+                alt=""
+                width={14}
+                height={10}
+                loading="lazy"
+                decoding="async"
+                className="rounded-[2px] w-3.5 h-auto"
+              />
+              <span>{c.code}</span>
+            </button>
+          );
+        }),
+      )}
     </div>
   );
 }
@@ -174,6 +230,10 @@ function SceneLanguages() {
 export function Scenes() {
   const wrapRef = useRef(null);
   const ghostRef = useRef(null);
+  const ballRef = useRef(null);
+  const ringRef = useRef(null);
+  const sceneNumRef = useRef(null);
+  const nudgeRef = useRef(null);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -236,6 +296,7 @@ export function Scenes() {
 
       /* Orb ghost: transitions position, scale, color between scenes */
       if (ghost && desktop && !reduce) {
+        const ball = ballRef.current;
         const shift = () => window.innerWidth * 0.28;
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -248,14 +309,85 @@ export function Scenes() {
         });
         tl.to(ghost, { opacity: 0.85, scale: 1, ease: "none", duration: 0.06 })
           .to(ghost, { x: () => shift(), scale: 1.3, ease: "none", duration: 0.22 })
-          .to(ghost, { filter: "hue-rotate(-30deg)", ease: "none", duration: 0.22 }, "<")
+          .to(ball, { filter: "hue-rotate(-30deg)", ease: "none", duration: 0.22 }, "<")
           .to(ghost, { x: () => -shift(), scale: 0.75, ease: "none", duration: 0.24 })
-          .to(ghost, { filter: "hue-rotate(35deg)", ease: "none", duration: 0.24 }, "<")
+          .to(ball, { filter: "hue-rotate(35deg)", ease: "none", duration: 0.24 }, "<")
           .to(ghost, { x: () => shift(), scale: 1.15, ease: "none", duration: 0.24 })
-          .to(ghost, { filter: "hue-rotate(-70deg)", ease: "none", duration: 0.24 }, "<")
+          .to(ball, { filter: "hue-rotate(-70deg)", ease: "none", duration: 0.24 }, "<")
           .to(ghost, { x: 0, scale: 0.9, ease: "none", duration: 0.18 })
-          .to(ghost, { filter: "hue-rotate(0deg)", ease: "none", duration: 0.18 }, "<")
+          .to(ball, { filter: "hue-rotate(0deg)", ease: "none", duration: 0.18 }, "<")
           .to(ghost, { opacity: 0, ease: "none", duration: 0.06 });
+
+        /* --- keep-scrolling cues ------------------------------------ */
+        const ring = ringRef.current;
+        const num = sceneNumRef.current;
+        const nudge = nudgeRef.current;
+        const C = 2 * Math.PI * 48; // ring circumference (r=48 in a 100 viewBox)
+        if (ring) {
+          ring.style.strokeDasharray = `${C}`;
+          ring.style.strokeDashoffset = `${C}`;
+        }
+
+        // velocity squash & stretch on the ball
+        const syTo = gsap.quickTo(ball, "scaleY", { duration: 0.3, ease: "power2.out" });
+        const sxTo = gsap.quickTo(ball, "scaleX", { duration: 0.3, ease: "power2.out" });
+        let settle = null;
+
+        // idle "keep scrolling" nudge
+        let active = false;
+        let idleTimer = null;
+        let nudgeShown = false;
+        if (nudge) gsap.set(nudge, { y: 10 });
+        const showNudge = () => {
+          if (!nudge) return;
+          nudgeShown = true;
+          gsap.to(nudge, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out", overwrite: "auto" });
+        };
+        const hideNudge = () => {
+          if (!nudge || !nudgeShown) return;
+          nudgeShown = false;
+          gsap.to(nudge, { opacity: 0, y: 10, duration: 0.25, ease: "power2.out", overwrite: "auto" });
+        };
+        const resetIdle = () => {
+          hideNudge();
+          clearTimeout(idleTimer);
+          if (active) idleTimer = setTimeout(showNudge, 2500);
+        };
+
+        ScrollTrigger.create({
+          trigger: wrap,
+          start: "top 60%",
+          end: "bottom 40%",
+          onToggle: (self) => {
+            active = self.isActive;
+            if (active) resetIdle();
+            else {
+              clearTimeout(idleTimer);
+              hideNudge();
+            }
+          },
+          onUpdate: (self) => {
+            // progress ring + scene counter
+            const p = self.progress;
+            if (ring) ring.style.strokeDashoffset = `${C * (1 - p)}`;
+            if (num) {
+              const n = Math.min(4, Math.floor(p * 4) + 1);
+              num.textContent = `0${n} / 04`;
+            }
+            // squash & stretch with scroll velocity
+            const v = Math.abs(self.getVelocity());
+            const s = gsap.utils.clamp(1, 1.25, 1 + v / 5000);
+            syTo(s);
+            sxTo(1 - (s - 1) * 0.5);
+            settle?.kill();
+            settle = gsap.delayedCall(0.15, () => {
+              syTo(1);
+              sxTo(1);
+            });
+            // any scroll counts as activity
+            resetIdle();
+          },
+        });
       }
     }, wrap);
 
@@ -268,14 +400,60 @@ export function Scenes() {
       <div
         ref={ghostRef}
         aria-hidden
-        className="hidden md:block fixed left-1/2 top-1/2 w-44 h-44 -ml-22 -mt-22 rounded-full pointer-events-none z-0 blur-2xl"
-        style={{
-          opacity: 0,
-          willChange: "transform, opacity, filter",
-          background:
-            "radial-gradient(circle at 38% 35%, rgba(165,180,252,0.9), rgba(79,70,229,0.55) 45%, rgba(139,92,246,0.18) 75%, transparent 100%)",
-        }}
-      />
+        className="hidden md:block fixed left-1/2 top-1/2 w-44 h-44 -ml-22 -mt-22 pointer-events-none z-0"
+        style={{ opacity: 0, willChange: "transform, opacity" }}
+      >
+        {/* the ball (blurred; squashes & stretches with scroll velocity) */}
+        <div
+          ref={ballRef}
+          className="absolute inset-0 rounded-full blur-2xl"
+          style={{
+            willChange: "transform, filter",
+            background:
+              "radial-gradient(circle at 38% 35%, rgba(165,180,252,0.9), rgba(79,70,229,0.55) 45%, rgba(139,92,246,0.18) 75%, transparent 100%)",
+          }}
+        />
+        {/* crisp progress ring — fills as the scenes play */}
+        <svg className="absolute -inset-2" viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="scene-ring" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#8b5cf6" />
+              <stop offset="55%" stopColor="#4f46e5" />
+              <stop offset="100%" stopColor="#06b6d4" />
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(17,24,39,0.08)" strokeWidth="1" />
+          <circle
+            ref={ringRef}
+            cx="50"
+            cy="50"
+            r="48"
+            fill="none"
+            stroke="url(#scene-ring)"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            transform="rotate(-90 50 50)"
+          />
+        </svg>
+        {/* scene counter */}
+        <div
+          ref={sceneNumRef}
+          className="absolute -bottom-9 left-1/2 -translate-x-1/2 font-mono text-[10px] tracking-[0.3em] text-stone"
+        >
+          01 / 04
+        </div>
+      </div>
+
+      {/* idle nudge — appears only if the user stalls inside the pinned scenes */}
+      <div
+        ref={nudgeRef}
+        aria-hidden
+        className="hidden md:inline-flex fixed bottom-8 left-1/2 -translate-x-1/2 z-20 pointer-events-none glass-bar items-center gap-2 px-4 py-2 font-mono text-[10px] tracking-[0.25em] uppercase text-stone"
+        style={{ opacity: 0, willChange: "transform, opacity" }}
+      >
+        Keep scrolling <span className="nudge-bob text-gold">↓</span>
+      </div>
+
       <div ref={wrapRef} className="relative z-10 max-w-[1400px] mx-auto">
         <div className="font-mono text-[10px] tracking-[0.3em] uppercase text-stone mb-4">§ 02 — Product</div>
         <h2 className="font-display text-4xl md:text-6xl tracking-tight max-w-3xl">
