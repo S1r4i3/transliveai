@@ -69,10 +69,11 @@ export function useHeroAnimation(rootRef, titleRef, cycleKey) {
           { opacity: 1, y: 0, rotationY: 0, duration: 1.2, ease: "power3.out" },
           0.35,
         )
-        // dashboard builds sequentially…
-        .to(dashItems, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.09 }, 0.8)
-        // …progress bars fill…
-        .to(fills, { scaleX: 1, duration: 0.8, ease: "power2.out", stagger: 0.12 }, 1.05);
+        // dashboard builds sequentially (no-ops if the hero has no dashboard)
+        if (dashItems.length)
+          tl.to(dashItems, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.09 }, 0.8);
+        if (fills.length)
+          tl.to(fills, { scaleX: 1, duration: 0.8, ease: "power2.out", stagger: 0.12 }, 1.05);
       // …and the stat counters tick up
       counts.forEach((c, i) => {
         const end = parseFloat(c.dataset.count);

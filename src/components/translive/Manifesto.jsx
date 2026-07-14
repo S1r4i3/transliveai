@@ -49,8 +49,8 @@ export function Manifesto() {
                 key={i}
                 className="inline-block mr-3 transition-colors duration-500"
                 style={{
-                  color: lit ? "transparent" : "rgba(17,24,39,0.16)",
-                  backgroundImage: lit ? "linear-gradient(120deg,#111827 0%,#4f46e5 60%,#06b6d4 100%)" : "none",
+                  color: lit ? "transparent" : "rgba(255,255,255,0.16)",
+                  backgroundImage: lit ? "linear-gradient(120deg,#ffffff 0%,#4f8bff 60%,#00d4ff 100%)" : "none",
                   WebkitBackgroundClip: "text",
                   backgroundClip: "text",
                 }}

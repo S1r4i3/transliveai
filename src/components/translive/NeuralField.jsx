@@ -82,7 +82,7 @@ export function NeuralField({ density = 60 }) {
           const d2 = dx * dx + dy * dy;
           if (d2 < LINK * LINK) {
             const o = (1 - Math.sqrt(d2) / LINK) * 0.16;
-            ctx.strokeStyle = `rgba(79,70,229,${o})`;
+            ctx.strokeStyle = `rgba(110,231,255,${o})`;
             ctx.beginPath();
             ctx.moveTo(a.x * w, a.y * h);
             ctx.lineTo(b.x * w, b.y * h);
@@ -101,7 +101,7 @@ export function NeuralField({ density = 60 }) {
           ctx.font = "13px 'JetBrains Mono', monospace";
           ctx.fillText(p.glyph, X, Y);
         } else {
-          ctx.fillStyle = `rgba(79,70,229,${0.5 * breathe})`;
+          ctx.fillStyle = `rgba(110,231,255,${0.5 * breathe})`;
           ctx.beginPath();
           ctx.arc(X, Y, p.r, 0, 7);
           ctx.fill();

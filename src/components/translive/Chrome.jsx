@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { prefersReduced } from "./motion";
 import { Logo } from "./Logo";
+import { setSoundEnabled } from "./sound";
 
 /* Custom cursor: dot + trailing ring (0.15 lerp).
    Ring → 60px with label over [data-cursor] targets (PLAY / DRAG),
@@ -19,18 +20,18 @@ export function useCursor() {
     document.body.append(dot, ring);
     Object.assign(dot.style, {
       position: "fixed", top: "0", left: "0", width: "6px", height: "6px",
-      background: "#4f46e5", borderRadius: "9999px", pointerEvents: "none",
+      background: "#4f8bff", borderRadius: "9999px", pointerEvents: "none",
       zIndex: "9999", transform: "translate(-50%,-50%)", transition: "opacity .2s",
       willChange: "transform",
     });
     Object.assign(ring.style, {
       position: "fixed", top: "0", left: "0", width: "36px", height: "36px",
-      border: "1px solid rgba(79,70,229,0.6)", borderRadius: "9999px",
+      border: "1px solid rgba(79,139,255,0.6)", borderRadius: "9999px",
       pointerEvents: "none", zIndex: "9998",
       transform: "translate(-50%,-50%)",
       transition: "width .25s, height .25s, background .25s, border-color .25s, opacity .2s",
       display: "flex", alignItems: "center", justifyContent: "center",
-      fontFamily: "var(--font-mono, monospace)", fontSize: "10px", color: "#ffffff",
+      fontFamily: "var(--font-mono, monospace)", fontSize: "10px", color: "#050816",
       letterSpacing: "0.1em", willChange: "transform",
     });
 
@@ -77,16 +78,16 @@ export function useCursor() {
       if (mode === "label") {
         // 60px, filled, shows PLAY / DRAG
         ring.style.width = "60px"; ring.style.height = "60px";
-        ring.style.background = "#4f46e5"; ring.style.borderColor = "#4f46e5";
+        ring.style.background = "#4f8bff"; ring.style.borderColor = "#4f8bff";
       } else if (mode === "button") {
         // shrinks and brightens
         ring.style.width = "20px"; ring.style.height = "20px";
-        ring.style.background = "rgba(79,70,229,0.2)";
-        ring.style.borderColor = "#818cf8";
+        ring.style.background = "rgba(79,139,255,0.2)";
+        ring.style.borderColor = "#6ee7ff";
       } else {
         ring.style.width = "36px"; ring.style.height = "36px";
         ring.style.background = "transparent";
-        ring.style.borderColor = "rgba(79,70,229,0.6)";
+        ring.style.borderColor = "rgba(79,139,255,0.6)";
       }
     };
     const onOver = (e) => {
@@ -115,6 +116,36 @@ export function useCursor() {
   }, []);
 }
 
+/* Ambient sound toggle — off by default, remembers the choice */
+function SoundToggle() {
+  const [on, setOn] = useState(false);
+  const toggle = () => {
+    const next = !on;
+    setOn(next);
+    setSoundEnabled(next);
+  };
+  return (
+    <button
+      onClick={toggle}
+      aria-label={on ? "Mute ambient sound" : "Enable ambient sound"}
+      aria-pressed={on}
+      title={on ? "Sound on" : "Sound off"}
+      className={`w-9 h-9 grid place-items-center rounded-full border transition-colors ${
+        on ? "border-gold/60 text-gold" : "border-line text-bone/50 hover:text-bone/80"
+      }`}
+    >
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M11 5 6 9H3v6h3l5 4z" />
+        {on ? (
+          <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
+        ) : (
+          <path d="M16 9l5 6M21 9l-5 6" />
+        )}
+      </svg>
+    </button>
+  );
+}
+
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -133,13 +164,13 @@ export function Nav() {
         <div
           className="glass-bar mx-auto max-w-[1200px] px-5 md:px-7 h-14 md:h-16 flex items-center justify-between"
           style={{
-            background: scrolled ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.5)",
+            background: scrolled ? "rgba(10,17,40,0.6)" : "rgba(255,255,255,0.05)",
             backdropFilter: scrolled
               ? "blur(38px) saturate(180%)"
               : "blur(24px) saturate(150%)",
             boxShadow: scrolled
-              ? "0 14px 40px rgba(31,41,55,0.1), 0 0 36px rgba(79,70,229,0.08), inset 0 1px 0 rgba(255,255,255,0.95)"
-              : "0 10px 30px rgba(31,41,55,0.06), inset 0 1px 0 rgba(255,255,255,0.85)",
+              ? "0 14px 40px rgba(0,0,0,0.5), 0 0 36px rgba(79,139,255,0.14), inset 0 1px 0 rgba(255,255,255,0.18)"
+              : "0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.12)",
             transition:
               "background 0.4s ease-out, backdrop-filter 0.4s ease-out, box-shadow 0.4s ease-out",
           }}
@@ -154,6 +185,7 @@ export function Nav() {
             <a href="#engine" className="nav-link hover:text-bone transition">Engine</a>
           </nav>
           <div className="flex items-center gap-3">
+            <SoundToggle />
             <a href="#demo" className="hidden md:inline-flex text-sm text-bone/70 hover:text-bone">Sign in</a>
             <a
               href="#cta"

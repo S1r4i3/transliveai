@@ -11,6 +11,7 @@ import { Stats, Badges, Testimonials } from "@/components/translive/Middle";
 import { Demo } from "@/components/translive/Demo";
 import { Pricing, Engine } from "@/components/translive/Pricing";
 import { Closing, Footer } from "@/components/translive/Closing";
+import { TrustedBy, HowItWorks, VoiceClone, FAQ } from "@/components/translive/Story";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,17 +41,21 @@ function Index() {
       <Nav />
       <main>
         <Hero />
+        <TrustedBy />
         <Marquee />
         <Manifesto />
+        <HowItWorks />
         <Scenes />
         <Features />
         <Stats />
         <Marquee reverse />
         <Demo />
+        <VoiceClone />
         <Badges />
         <Testimonials />
         <Pricing />
         <Engine />
+        <FAQ />
         <Closing />
       </main>
       <Footer />

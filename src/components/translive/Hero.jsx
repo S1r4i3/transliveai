@@ -1,10 +1,13 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useHeroAnimation } from "./hooks";
 
-/* Code-split: the neural canvas ships in its own chunk and never blocks
+/* Code-split: canvas scenes ship in their own chunks and never block
    first paint of the hero content. */
 const NeuralField = lazy(() =>
   import("./NeuralField").then((m) => ({ default: m.NeuralField })),
+);
+const RealEarth = lazy(() =>
+  import("./RealEarth").then((m) => ({ default: m.RealEarth })),
 );
 
 const HELLOS = [
@@ -14,14 +17,6 @@ const HELLOS = [
   { text: "모든 언어. 하나의 목소리. 당신의.", lang: "ko" },
   { text: "すべての言語。ひとつの声。あなたの。", lang: "ja" },
   { text: "Todos los idiomas. Una voz. La tuya.", lang: "es" },
-];
-
-const CHIPS = ["EN", "हिं", "తె", "한", "ES", "FR"];
-
-const TIMELINE = [
-  { label: "Extracting speech", pct: 100, tone: "from-violet-400/80 to-blue-400/80" },
-  { label: "Translating context", pct: 82, tone: "from-blue-400/80 to-cyan-400/80" },
-  { label: "Cloning voice · lip-sync", pct: 46, tone: "from-cyan-400/80 to-cyan-300/80" },
 ];
 
 /* Deterministic particle field (no SSR/hydration mismatch) */
@@ -63,7 +58,7 @@ export function Hero() {
         style={{
           willChange: "transform",
           background:
-            "radial-gradient(ellipse 70% 55% at 30% 35%, rgba(139,92,246,0.08), transparent 70%), radial-gradient(ellipse 55% 45% at 75% 65%, rgba(6,182,212,0.06), transparent 70%)",
+            "radial-gradient(ellipse 70% 55% at 30% 35%, rgba(139,92,246,0.14), transparent 70%), radial-gradient(ellipse 55% 45% at 75% 65%, rgba(0,212,255,0.1), transparent 70%)",
         }}
       />
       {/* Fractured glass accents in the corners */}
@@ -136,92 +131,22 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ------- Right: floating AI translation dashboard --------- */}
+        {/* ------- Right: floating AI translation orb --------------- */}
         <div
           data-orb-parallax
           className="relative z-10 w-full max-w-xl mx-auto lg:max-w-none lg:mx-0"
           style={{ willChange: "transform", transformStyle: "preserve-3d" }}
         >
-          {/* Main ripple-glass dashboard */}
-          <div className="glass-ripple floaty p-6 md:p-7">
-            <span className="sweep-layer" aria-hidden />
-            {/* Header: title + API status */}
-            <div data-dash-item className="flex items-center justify-between">
-              <div className="font-display text-lg tracking-tight text-bone">
-                Translation Studio
-              </div>
-              <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-bone/60">
-                <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-                API · Operational
-              </div>
-            </div>
-
-            {/* Language chips */}
-            <div data-dash-item className="mt-5 flex flex-wrap gap-2">
-              {CHIPS.map((c, k) => (
-                <span
-                  key={c}
-                  className={`chip-pop rounded-full border px-3 py-1 text-xs font-mono ${
-                    k === 0
-                      ? "border-gold/60 bg-gold/15 text-gold"
-                      : "border-line bg-glass text-bone/70"
-                  }`}
-                >
-                  {c}
-                </span>
-              ))}
-            </div>
-
-            {/* Translation timeline */}
-            <div className="mt-6 space-y-4">
-              {TIMELINE.map((row) => (
-                <div key={row.label} data-dash-item>
-                  <div className="flex items-center justify-between font-mono text-[10px] tracking-widest uppercase text-bone/55">
-                    <span>{row.label}</span>
-                    <span className="text-gold">{row.pct}%</span>
-                  </div>
-                  <div className="mt-1.5 h-1.5 rounded-full bg-bone/10 overflow-hidden">
-                    <div
-                      className={`dash-fill h-full rounded-full bg-gradient-to-r ${row.tone}`}
-                      style={{ width: `${row.pct}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Audio waveform */}
-            <div data-dash-item className="mt-6 flex items-end gap-0.5 h-10">
-              {Array.from({ length: 44 }).map((_, k) => (
-                <span
-                  key={k}
-                  className="flex-1 rounded-sm bg-gradient-to-t from-blue-400/70 to-cyan-300/80"
-                  style={{
-                    height: `${18 + Math.abs(Math.sin(k * 0.45)) * 82}%`,
-                    animation: `waveform ${0.8 + (k % 5) * 0.18}s ease-in-out infinite`,
-                    animationDelay: `${k * 0.03}s`,
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Footer row: voice clone + latency */}
-            <div data-dash-item className="mt-6 grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-line bg-glass px-4 py-3">
-                <div className="font-mono text-[9px] tracking-widest uppercase text-stone">Voice clone</div>
-                <div className="mt-1 font-display text-xl gold-text" data-count="98.2" data-decimals="1" data-suffix="%">98.2%</div>
-              </div>
-              <div className="rounded-xl border border-line bg-glass px-4 py-3">
-                <div className="font-mono text-[9px] tracking-widest uppercase text-stone">Latency</div>
-                <div className="mt-1 font-display text-xl text-bone" data-count="0.4" data-decimals="1" data-suffix="s">0.4s</div>
-              </div>
-            </div>
+          <div className="floaty">
+            <Suspense fallback={null}>
+              <RealEarth />
+            </Suspense>
           </div>
 
-          {/* Floating diamond widgets */}
+          {/* Floating glass widgets around the orb */}
           <div
             data-tilt
-            className="glass-diamond floaty hidden lg:block absolute -top-8 -right-6 px-5 py-4"
+            className="glass-diamond floaty hidden lg:block absolute top-6 -right-2 px-5 py-4"
             style={{ animationDelay: "1.6s" }}
           >
             <div className="font-mono text-[9px] tracking-widest uppercase text-stone">Languages</div>
@@ -229,7 +154,7 @@ export function Hero() {
           </div>
           <div
             data-tilt
-            className="glass-diamond floaty hidden lg:block absolute -bottom-9 -left-8 px-5 py-4"
+            className="glass-diamond floaty hidden lg:block absolute bottom-10 -left-4 px-5 py-4"
             style={{ animationDelay: "3.2s" }}
           >
             <div className="flex items-center gap-2">
@@ -238,6 +163,14 @@ export function Hero() {
                 Lip-sync · live
               </span>
             </div>
+          </div>
+          <div
+            data-tilt
+            className="glass-diamond floaty hidden lg:block absolute top-1/2 -right-10 px-5 py-4"
+            style={{ animationDelay: "4.6s" }}
+          >
+            <div className="font-mono text-[9px] tracking-widest uppercase text-stone">Latency</div>
+            <div className="mt-1 font-display text-2xl text-bone">0.4s</div>
           </div>
         </div>
       </div>

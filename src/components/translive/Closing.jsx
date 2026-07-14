@@ -120,7 +120,7 @@ export function Closing() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 60% 40% at 42% 60%, rgba(79,70,229,0.1), transparent 70%), radial-gradient(ellipse 50% 35% at 62% 45%, rgba(139,92,246,0.08), transparent 70%)",
+            "radial-gradient(ellipse 60% 40% at 42% 60%, rgba(79,139,255,0.1), transparent 70%), radial-gradient(ellipse 50% 35% at 62% 45%, rgba(139,92,246,0.08), transparent 70%)",
         }}
       />
       {/* Fractured glass accent */}
@@ -137,8 +137,8 @@ export function Closing() {
           style={{
             willChange: "transform, opacity",
             background:
-              "radial-gradient(circle at 38% 32%, rgba(165,180,252,0.95), rgba(79,70,229,0.5) 45%, rgba(139,92,246,0.15) 78%, transparent 100%)",
-            boxShadow: "0 0 60px rgba(79,70,229,0.3)",
+              "radial-gradient(circle at 38% 32%, rgba(110,231,255,0.95), rgba(79,139,255,0.5) 45%, rgba(139,92,246,0.15) 78%, transparent 100%)",
+            boxShadow: "0 0 60px rgba(79,139,255,0.3)",
           }}
         />
         <h2

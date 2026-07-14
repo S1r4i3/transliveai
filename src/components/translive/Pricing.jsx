@@ -56,7 +56,7 @@ export function Pricing() {
               data-tilt
               className={
                 t.highlight
-                  ? "glass-diamond gradient-border-anim relative p-8 lg:-mt-5 lg:mb-[-4px] shadow-[0_0_80px_rgba(79,70,229,0.15)]"
+                  ? "glass-diamond gradient-border-anim relative p-8 lg:-mt-5 lg:mb-[-4px] shadow-[0_0_80px_rgba(79,139,255,0.2)]"
                   : "glass-panel lift-card relative p-8"
               }
             >

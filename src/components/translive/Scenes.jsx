@@ -92,9 +92,9 @@ const ORBITS = [
 
 function SceneVideo() {
   return (
-    <div data-cursor="PLAY" className="relative aspect-video w-full max-w-md rounded-2xl border border-line overflow-hidden bg-gradient-to-br from-ink to-[#eef2ff]">
+    <div data-cursor="PLAY" className="relative aspect-video w-full max-w-md rounded-2xl border border-line overflow-hidden bg-gradient-to-br from-ink to-[#0a1230]">
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-16 h-16 rounded-full bg-gold/90 grid place-items-center shadow-[0_0_50px_rgba(79,70,229,0.6)]">
+        <div className="w-16 h-16 rounded-full bg-gold/90 grid place-items-center shadow-[0_0_50px_rgba(79,139,255,0.6)]">
           <div className="w-0 h-0 border-y-[10px] border-y-transparent border-l-[16px] border-l-ink ml-1" />
         </div>
       </div>
@@ -118,13 +118,13 @@ function SceneFace() {
       <svg viewBox="0 0 400 400" className="w-full h-full">
         <defs>
           <radialGradient id="faceg" cx="50%" cy="45%">
-            <stop offset="0%" stopColor="rgba(79,70,229,0.3)" />
-            <stop offset="100%" stopColor="rgba(79,70,229,0)" />
+            <stop offset="0%" stopColor="rgba(79,139,255,0.3)" />
+            <stop offset="100%" stopColor="rgba(79,139,255,0)" />
           </radialGradient>
         </defs>
         <circle cx="200" cy="200" r="150" fill="url(#faceg)" />
         {/* Wireframe head */}
-        <g stroke="rgba(79,70,229,0.5)" fill="none" strokeWidth="0.6">
+        <g stroke="rgba(79,139,255,0.5)" fill="none" strokeWidth="0.6">
           {Array.from({ length: 12 }).map((_, i) => (
             <ellipse key={i} cx="200" cy="200" rx={100 + i * 4} ry={130 + i} />
           ))}
@@ -133,10 +133,10 @@ function SceneFace() {
           ))}
         </g>
         {/* Eyes */}
-        <ellipse cx="160" cy="180" rx="8" ry="3" fill="#4f46e5" />
-        <ellipse cx="240" cy="180" rx="8" ry="3" fill="#4f46e5" />
+        <ellipse cx="160" cy="180" rx="8" ry="3" fill="#4f8bff" />
+        <ellipse cx="240" cy="180" rx="8" ry="3" fill="#4f8bff" />
         {/* Mouth animated */}
-        <ellipse cx="200" cy="250" rx="30" ry="8" fill="none" stroke="#4f46e5" strokeWidth="1.5">
+        <ellipse cx="200" cy="250" rx="30" ry="8" fill="none" stroke="#4f8bff" strokeWidth="1.5">
           <animate attributeName="ry" values="4;12;6;10;4" dur="1.6s" repeatCount="indefinite" />
         </ellipse>
       </svg>
@@ -165,7 +165,7 @@ function SceneVocal() {
         <div className="font-mono text-[10px] tracking-widest text-gold uppercase mb-2">Instrumental — retained</div>
         <div className="flex items-end gap-0.5 h-20">
           {Array.from({ length: 60 }).map((_, i) => (
-            <span key={i} className="flex-1 bg-gradient-to-t from-gold-soft to-gold rounded-sm shadow-[0_0_8px_rgba(79,70,229,0.5)]" style={{ height: `${25 + Math.abs(Math.cos(i * 0.35)) * 75}%`, animation: `waveform ${0.9 + (i % 6) * 0.15}s ease-in-out infinite`, animationDelay: `${i * 0.02}s` }} />
+            <span key={i} className="flex-1 bg-gradient-to-t from-gold-soft to-gold rounded-sm shadow-[0_0_8px_rgba(79,139,255,0.5)]" style={{ height: `${25 + Math.abs(Math.cos(i * 0.35)) * 75}%`, animation: `waveform ${0.9 + (i % 6) * 0.15}s ease-in-out infinite`, animationDelay: `${i * 0.02}s` }} />
           ))}
         </div>
       </div>
@@ -410,7 +410,7 @@ export function Scenes() {
           style={{
             willChange: "transform, filter",
             background:
-              "radial-gradient(circle at 38% 35%, rgba(165,180,252,0.9), rgba(79,70,229,0.55) 45%, rgba(139,92,246,0.18) 75%, transparent 100%)",
+              "radial-gradient(circle at 38% 35%, rgba(110,231,255,0.9), rgba(79,139,255,0.55) 45%, rgba(139,92,246,0.18) 75%, transparent 100%)",
           }}
         />
         {/* crisp progress ring — fills as the scenes play */}
@@ -418,11 +418,11 @@ export function Scenes() {
           <defs>
             <linearGradient id="scene-ring" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stopColor="#8b5cf6" />
-              <stop offset="55%" stopColor="#4f46e5" />
-              <stop offset="100%" stopColor="#06b6d4" />
+              <stop offset="55%" stopColor="#4f8bff" />
+              <stop offset="100%" stopColor="#00d4ff" />
             </linearGradient>
           </defs>
-          <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(17,24,39,0.08)" strokeWidth="1" />
+          <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
           <circle
             ref={ringRef}
             cx="50"

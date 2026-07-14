@@ -140,7 +140,7 @@ export function useMotion() {
       /* ============================================================ */
       /* Per-word gradient fill-on-scroll for section headlines        */
       /* ============================================================ */
-      const DIM = "rgba(17,24,39,0.14)";
+      const DIM = "rgba(255,255,255,0.14)";
       gsap.utils.toArray("main section h2:not([data-no-fill])").forEach((h2) => {
         const words = splitWords(h2);
         const goldFlags = words.map((w) => !!w.closest(".gold-text"));
@@ -151,8 +151,8 @@ export function useMotion() {
         );
         words.forEach((w, i) => {
           const lit = goldFlags[i]
-            ? "#8b5cf6 0%, #4f46e5 22%, #06b6d4 42%"
-            : "#111827 0%, #111827 22%, #374151 42%";
+            ? "#6ee7ff 0%, #4f8bff 22%, #8b5cf6 42%"
+            : "#ffffff 0%, #ffffff 22%, #cbd5e1 42%";
           w.classList.add("tv-fill-word");
           w.style.backgroundImage = `linear-gradient(110deg, ${lit}, ${DIM} 55%, ${DIM} 100%)`;
         });
@@ -182,7 +182,8 @@ export function useMotion() {
           (el) =>
             !el.closest("[data-scene]") &&
             !el.closest("#top") &&
-            !el.closest("[data-reveal-stagger]"),
+            !el.closest("[data-reveal-stagger]") &&
+            !el.closest(".faq-item"), // <details> content has no box while closed
         );
       gsap.set(paras, { y: 30, opacity: 0, filter: "blur(4px)" });
       ScrollTrigger.batch(paras, {
