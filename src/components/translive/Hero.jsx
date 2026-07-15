@@ -144,34 +144,7 @@ export function Hero() {
           </div>
 
           {/* Floating glass widgets around the orb */}
-          <div
-            data-tilt
-            className="glass-diamond floaty hidden lg:block absolute top-6 -right-2 px-5 py-4"
-            style={{ animationDelay: "1.6s" }}
-          >
-            <div className="font-mono text-[9px] tracking-widest uppercase text-stone">Languages</div>
-            <div className="mt-1 font-display text-2xl gold-text">42</div>
-          </div>
-          <div
-            data-tilt
-            className="glass-diamond floaty hidden lg:block absolute bottom-10 -left-4 px-5 py-4"
-            style={{ animationDelay: "3.2s" }}
-          >
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
-              <span className="font-mono text-[10px] tracking-widest uppercase text-bone/70">
-                Lip-sync · live
-              </span>
-            </div>
-          </div>
-          <div
-            data-tilt
-            className="glass-diamond floaty hidden lg:block absolute top-1/2 -right-10 px-5 py-4"
-            style={{ animationDelay: "4.6s" }}
-          >
-            <div className="font-mono text-[9px] tracking-widest uppercase text-stone">Latency</div>
-            <div className="mt-1 font-display text-2xl text-bone">0.4s</div>
-          </div>
+          
         </div>
       </div>
 
