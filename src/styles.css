@@ -767,6 +767,15 @@ footer form:focus-within {
   );
 }
 
+/* sparse star layer breathing */
+.star-twinkle {
+  animation: star-twinkle 4.5s ease-in-out infinite alternate;
+}
+@keyframes star-twinkle {
+  from { opacity: 0.25; }
+  to { opacity: 0.9; }
+}
+
 .floaty {
   animation: floaty 7s ease-in-out infinite;
   will-change: transform;

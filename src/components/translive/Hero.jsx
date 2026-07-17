@@ -1,13 +1,14 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useHeroAnimation } from "./hooks";
+import { Stars } from "./globe/Stars";
 
 /* Code-split: canvas scenes ship in their own chunks and never block
    first paint of the hero content. */
 const NeuralField = lazy(() =>
   import("./NeuralField").then((m) => ({ default: m.NeuralField })),
 );
-const RealEarth = lazy(() =>
-  import("./RealEarth").then((m) => ({ default: m.RealEarth })),
+const HeroGlobe = lazy(() =>
+  import("./globe/HeroGlobe").then((m) => ({ default: m.HeroGlobe })),
 );
 
 const HELLOS = [
@@ -48,7 +49,8 @@ export function Hero() {
       id="top"
       className="relative min-h-screen flex items-center overflow-hidden pt-28 pb-16"
     >
-      {/* Cinematic backdrop: aurora, rays, particles, cursor-shifted glow */}
+      {/* Cinematic backdrop: stars, aurora, rays, particles, cursor glow */}
+      <Stars />
       <div className="aurora" aria-hidden />
       <div className="light-rays" aria-hidden />
       <div
@@ -139,7 +141,7 @@ export function Hero() {
         >
           <div className="floaty">
             <Suspense fallback={null}>
-              <RealEarth />
+              <HeroGlobe />
             </Suspense>
           </div>
 
